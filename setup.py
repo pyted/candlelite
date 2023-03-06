@@ -5,15 +5,14 @@ from shutil import rmtree
 from setuptools import find_packages, setup, Command
 
 NAME = 'candlelite'
-DESCRIPTION = 'candlelite'
+DESCRIPTION = 'History candle database and utils'
 URL = "https://github.com/pyted/candlelite"
 EMAIL = 'pyted@outlook.com'
 AUTHOR = 'pyted'
 REQUIRES_PYTHON = '>=3.6.0'
-VERSION = '1.0.2'
+VERSION = '1.0.3'
 
 REQUIRED = [
-    'pendulum',
     'numpy',
     'pandas',
     'paux',
@@ -100,5 +99,10 @@ setup(
     ],
     cmdclass={
         'upload': UploadCommand,
+    },
+    entry_points={
+        'console_scripts': [
+            'candlelite = candlelite.cmdline:cmd'
+        ]
     },
 )

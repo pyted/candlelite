@@ -85,6 +85,10 @@ def read_settings(settings_path: str = None) -> dict:
         note = note.strip()
         k = k.strip()
         v = v.strip()
+        if v.startswith("'") or v.startswith('"'):
+            v = v[1:]
+        if v.endswith("'") or v.endswith('"'):
+            v = v[:-1]
         data[k] = [v, note]
     return data
 

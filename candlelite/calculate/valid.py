@@ -44,7 +44,7 @@ def valid_interval(
     if (diffs == interval).all():
         result = {'code': True, 'data': {}, 'msg': ''}
     else:
-        diffs_unique = ','.join(list(set(diffs.tolist())))
+        diffs_unique = str((list(set(diffs.tolist()))))
         msg = '[valid candle interval error]: correct_interval={correct_interval} error_interval={error_interval}'.format(
             correct_interval=interval,
             error_interval=diffs_unique,
