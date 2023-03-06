@@ -53,7 +53,8 @@ def save_candle_by_date(
         if not replace and os.path.isfile(path):
             continue
         start_ts = _date.to_ts(date=date, timezone=timezone)
-        end_ts = start_ts + 1000 * 60 * 60 * 24 - _interval.get_interval(bar=bar)
+        end_ts = _date.tomorrow(date=date, timezone=timezone).timestamp() * 1000 - _interval.get_interval(bar)
+        # end_ts = start_ts + 1000 * 60 * 60 * 24 - _interval.get_interval(bar=bar)
 
         candle_date = candle[
             (candle[:, 0] >= start_ts) & (candle[:, 0] <= end_ts)
@@ -78,8 +79,8 @@ def save_candle_by_date(
                 )
         # 验证end
         if valid_end:
-            end_ts = _date.to_ts(date=date, timezone=timezone) + 1000 * 60 * 60 * 24 - _interval.get_interval(
-                bar)
+            # end_ts = _date.to_ts(date=date, timezone=timezone) + 1000 * 60 * 60 * 24 - _interval.get_interval( bar)
+            end_ts = _date.tomorrow(date=date, timezone=timezone).timestamp() * 1000 - _interval.get_interval(bar)
             valid_end_result = _valid.valid_end(candle=candle_date, end=end_ts, timezone=timezone)
             if not valid_end_result['code']:
                 raise exception.CandleEndError(
@@ -142,7 +143,7 @@ def save_candle_by_file(
         instType: str,
         symbol: str,
         path: str = None,
-        base_dir:str ='',
+        base_dir: str = '',
         timezone: str = None,
         bar: Literal['1m', '3m', '5m', '15m', '1H', '2H', '4H'] = '1m',
         replace: bool = True,

@@ -104,7 +104,8 @@ def load_candle_by_date(
             )
     # 验证end
     if valid_end:
-        end_ts = _date.to_ts(date=date_range[-1], timezone=timezone) + 1000 * 60 * 60 * 24 - _interval.get_interval(bar)
+        end_ts = _date.tomorrow(date=date_range[-1],timezone=timezone).timestamp() * 1000 - _interval.get_interval(bar)
+        # end_ts = _date.to_ts(date=date_range[-1], timezone=timezone) + 1000 * 60 * 60 * 24 - _interval.get_interval(bar)
         valid_end_result = _valid.valid_end(candle=candle, end=end_ts, timezone=timezone)
         if not valid_end_result['code']:
             raise exception.CandleEndError(
