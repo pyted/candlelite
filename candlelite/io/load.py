@@ -104,7 +104,7 @@ def load_candle_by_date(
             )
     # 验证end
     if valid_end:
-        end_ts = _date.tomorrow(date=date_range[-1],timezone=timezone).timestamp() * 1000 - _interval.get_interval(bar)
+        end_ts = _date.tomorrow(date=date_range[-1], timezone=timezone).timestamp() * 1000 - _interval.get_interval(bar)
         # end_ts = _date.to_ts(date=date_range[-1], timezone=timezone) + 1000 * 60 * 60 * 24 - _interval.get_interval(bar)
         valid_end_result = _valid.valid_end(candle=candle, end=end_ts, timezone=timezone)
         if not valid_end_result['code']:
@@ -125,7 +125,7 @@ def load_candle_map_by_date(
         timezone: str = None,
         bar: Literal['1m', '3m', '5m', '15m', '1H', '2H', '4H'] = '1m',
         endswith: str = '',
-        contains:str = '',
+        contains: str = '',
         p_num: int = 4,
         valid_interval: bool = True,
         valid_start: bool = True,
@@ -225,6 +225,61 @@ def load_candle_map_by_date(
     for symbol in symbols:
         candle_map_sorted[symbol] = candle_map[symbol]
     return candle_map_sorted
+
+
+# 加载一个产品已有的全部K线
+def load_candle_all(
+        instType: str,
+        symbol: str,
+        base_dir: str,
+        timezone: str = None,
+        bar: Literal['1m', '3m', '5m', '15m', '1H', '2H', '4H'] = '1m',
+):
+    candle_dates_result = _path.get_candle_dates(
+        instType=instType,
+        symbol=symbol,
+        base_dir=base_dir,
+        timezone=timezone,
+        bar=bar,
+    )
+    if candle_dates_result['code'] != True:
+        raise exception.CandleDatesNonError(str(candle_dates_result))
+    candle = load_candle_by_date(
+        instType=instType,
+        start=candle_dates_result['data']['start'],
+        end=candle_dates_result['data']['end'],
+        symbol=symbol,
+        base_dir=base_dir,
+        timezone=timezone,
+        bar=bar,
+    )
+    return candle
+
+
+# 加载全部产品已有的K线
+def load_candle_map_all(
+        instType: str,
+        base_dir: str,
+        timezone: str = None,
+        bar: Literal['1m', '3m', '5m', '15m', '1H', '2H', '4H'] = '1m',
+):
+    symbols = _path.get_symbols_all(
+        instType=instType,
+        base_dir=base_dir,
+        timezone=timezone,
+        bar=bar,
+    )
+    candle_map = {}
+    for symbol in symbols:
+        candle = load_candle_all(
+            instType=instType,
+            symbol=symbol,
+            base_dir=base_dir,
+            timezone=timezone,
+            bar=bar,
+        )
+        candle_map[symbol] = candle
+    return candle_map
 
 
 # 通过文件地址读取Candle

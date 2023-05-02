@@ -50,3 +50,8 @@ class CandleEndError(AbstractEXP):
             symbol=str(symbol),
             msg=str(msg)
         )
+
+
+class CandleDatesNonError(AbstractEXP):
+    def __init__(self, error_msg):
+        self.error_msg = error_msg

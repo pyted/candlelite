@@ -3,6 +3,7 @@ import os
 import re
 import datetime
 from paux import date as _date
+from paux import file as _file
 
 __all__ = [
     'get_candle_date_path',  # 获取某一个天candle的路径
@@ -142,7 +143,7 @@ def check_candle_date_path(
         symbol: str,
         start: Union[int, float, str, datetime.date],
         end: Union[int, float, str, datetime.date],
-        base_dir:str ='',
+        base_dir: str = '',
         timezone: str = None,
         bar: Literal['1m', '3m', '5m', '15m', '1H', '2H', '4H'] = '1m',
 ):
@@ -178,3 +179,109 @@ def check_candle_date_path(
     return result
 
 
+# 获取candle具备数据的日期序列
+def get_candle_dates(
+        instType: str,
+        symbol: str,
+        base_dir: str = '',
+        timezone: str = None,
+        bar: Literal['1m', '3m', '5m', '15m', '1H', '2H', '4H'] = '1m',
+):
+    '''
+    :param instType: 产品类别
+    :param symbol: 产品名称
+    :param base_dir: 数据文件夹
+    :param timezone: 时区
+    :param bar: 时间粒度
+    :return:
+        code:
+            True    数据齐全
+            False   数据不全
+    '''
+    result = {
+        'code': True,
+        'data': {
+            'start': None,  # 数据起始
+            'end': None,  # 数据终止
+            'non': [],  # 缺失数据
+        },
+        'msg': ''
+    }
+    # 月份的文件夹地址
+    month_dirpath = os.path.join(
+        base_dir,
+        _get_date_dirname(instType=instType, timezone=timezone, bar=bar),
+    )
+    # 年-月 序列
+    year_months = [
+        fn for fn in os.listdir(month_dirpath)
+        if (os.path.isdir(os.path.join(month_dirpath, fn)))
+           and (re.match('\d{4}-\d{2}', fn))
+    ]
+    year_months = sorted(year_months)
+    if not year_months:
+        result['code'] = False
+        result['msg'] = '无数据'
+        return result
+    # 起始日期
+    start = year_months[0] + '-01'
+    days = _date.get_month_days(
+        year=year_months[-1].split('-')[0],
+        month=year_months[-1].split('-')[-1],
+        timezone=timezone,
+    )
+    # 终止日期
+    end = year_months[-1] + '-' + str(days)
+    dates = _date.get_range_dates(start=start, end=end, timezone=timezone)
+    candle_dates = []  # 有数据的日期
+    for date in dates:
+        path = get_candle_date_path(
+            instType=instType, symbol=symbol, date=date,
+            timezone=timezone, base_dir=base_dir, bar=bar
+        )
+
+        if os.path.isfile(path):
+            candle_dates.append(date)
+    result['data']['start'] = candle_dates[0]
+    result['data']['end'] = candle_dates[-1]
+    range_dates = _date.get_range_dates(start=candle_dates[0], end=candle_dates[-1], timezone=timezone)
+    for range_date in range_dates:
+        if range_date not in candle_dates:
+            result['data']['non'].append(range_date)
+            result['code'] = False
+    return result
+
+
+# 获取全部的产品名称
+def get_symbols_all(
+        instType: str,
+        base_dir: str = '',
+        timezone: str = None,
+        bar: Literal['1m', '3m', '5m', '15m', '1H', '2H', '4H'] = '1m',
+):
+    filenames = _file.get_deep_filenames(
+        dirpath=os.path.join(
+            base_dir,
+            _get_date_dirname(instType=instType, timezone=timezone, bar=bar),
+        )
+    )
+    filenames = [fn.rsplit('.', maxsplit=1)[0] for fn in list(set(filenames)) if fn.endswith('.csv')]
+    return filenames
+
+
+if __name__ == '__main__':
+    base_dir = '/Users/kzlknight/Documents/FINANCE_DATA/CANDLELITE_DATA/BINANCE'
+    symbols = get_symbols_all(
+        instType='UM',
+        base_dir=base_dir,
+        timezone='America/New_York'
+    )
+    print(symbols)
+    for symbol in symbols:
+        result_dates = get_candle_dates(
+            instType='UM',
+            symbol=symbol,
+            base_dir=base_dir,
+            timezone='America/New_York'
+        )
+        print(symbol, result_dates)

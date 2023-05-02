@@ -11,6 +11,72 @@ class IO():
     TIMEZONE: str
     BAR: str
 
+    # 获取candle具备数据的日期序列
+    def get_candle_dates(
+            self,
+            instType: str,
+            symbol: str,
+            base_dir: str = None,
+            timezone: str = None,
+            bar: Literal['1m', '3m', '5m', '15m', '1H', '2H', '4H'] = None,
+    ):
+        if base_dir == None:
+            base_dir = self.CANDLE_DATE_BASE_DIR
+        if timezone == None:
+            timezone = self.TIMEZONE
+        if bar == None:
+            bar = self.BAR
+        return path.get_candle_dates(**to_local(locals()))
+
+    # 获取全部的产品名称
+    def get_symbols_all(
+            self,
+            instType: str,
+            base_dir: str = None,
+            timezone: str = None,
+            bar: Literal['1m', '3m', '5m', '15m', '1H', '2H', '4H'] = None,
+    ):
+        if base_dir == None:
+            base_dir = self.CANDLE_DATE_BASE_DIR
+        if timezone == None:
+            timezone = self.TIMEZONE
+        if bar == None:
+            bar = self.BAR
+        return path.get_symbols_all(**to_local(locals()))
+
+    # 加载一个产品已有的全部K线
+    def load_candle_all(
+            self,
+            instType: str,
+            symbol: str,
+            base_dir: str = None,
+            timezone: str = None,
+            bar: Literal['1m', '3m', '5m', '15m', '1H', '2H', '4H'] = None,
+    ):
+        if base_dir == None:
+            base_dir = self.CANDLE_DATE_BASE_DIR
+        if timezone == None:
+            timezone = self.TIMEZONE
+        if bar == None:
+            bar = self.BAR
+        return load.load_candle_all(**to_local(locals()))
+
+    # 加载全部产品已有的K线
+    def load_candle_map_all(
+            self,
+            instType: str,
+            base_dir: str = None,
+            timezone: str = None,
+            bar: Literal['1m', '3m', '5m', '15m', '1H', '2H', '4H'] = None,
+    ):
+        if base_dir == None:
+            base_dir = self.CANDLE_DATE_BASE_DIR
+        if timezone == None:
+            timezone = self.TIMEZONE
+        if bar == None:
+            bar = self.BAR
+        return load.load_candle_map_all(**to_local(locals()))
+
     # 读取从start~end日期的历史K线数据
     def load_candle_by_date(
             self,
