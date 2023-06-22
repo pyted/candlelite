@@ -261,6 +261,7 @@ def load_candle_map_all(
         instType: str,
         base_dir: str,
         timezone: str = None,
+        p_num: int = 4,
         bar: Literal['1m', '3m', '5m', '15m', '1H', '2H', '4H'] = '1m',
 ):
     symbols = _path.get_symbols_all(
@@ -270,15 +271,39 @@ def load_candle_map_all(
         bar=bar,
     )
     candle_map = {}
-    for symbol in symbols:
-        candle = load_candle_all(
-            instType=instType,
-            symbol=symbol,
-            base_dir=base_dir,
-            timezone=timezone,
-            bar=bar,
+    if p_num > 1:
+        params = []
+        for symbol in symbols:
+            params.append(
+                dict(
+                    instType=instType,
+                    symbol=symbol,
+                    base_dir=base_dir,
+                    timezone=timezone,
+                    bar=bar,
+                )
+            )
+        results = _process.pool_worker(
+            params=params,
+            p_num=p_num,
+            func=load_candle_all,
+            skip_exception=False,
         )
-        candle_map[symbol] = candle
+        for i, candle in enumerate(results):
+            if _param.isnull(candle):
+                continue
+            symbol = symbols[i]
+            candle_map[symbol] = candle
+    else:
+        for symbol in symbols:
+            candle = load_candle_all(
+                instType=instType,
+                symbol=symbol,
+                base_dir=base_dir,
+                timezone=timezone,
+                bar=bar,
+            )
+            candle_map[symbol] = candle
     return candle_map
 
 
