@@ -67,6 +67,7 @@ class IO():
             instType: str,
             base_dir: str = None,
             timezone: str = None,
+            p_num: int = 4,
             bar: Literal['1m', '3m', '5m', '15m', '1H', '2H', '4H'] = None,
     ):
         if base_dir == None:
