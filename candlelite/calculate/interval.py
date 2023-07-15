@@ -12,7 +12,9 @@ def get_interval(bar: str, MINUTE_BAR_INTERVAL=60000) -> float:
     '''
     bar_int = int(bar[0:-1].strip())
     suffix = bar[-1].lower()
-    if suffix == 'm':
+    if suffix == 's':
+        interval = (MINUTE_BAR_INTERVAL / 60) * bar_int
+    elif suffix == 'm':
         interval = MINUTE_BAR_INTERVAL * bar_int
     elif suffix == 'h':
         interval = MINUTE_BAR_INTERVAL * 60 * bar_int

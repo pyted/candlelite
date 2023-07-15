@@ -10,12 +10,14 @@ def predict_bar(candle: np.array, MINUTE_BAR_INTERVAL=60000) -> str:
     :param candle: 历史K线
     :param MINUTE_BAR_INTERVAL: 每分钟的时间间隔，默认单位毫秒
 
-    支持的时间粒度估计: 秒m 小时h 天d
-    TODO NEXT:下个版本添加时间粒度 秒s与周w 的预测
+    支持的时间粒度估计: 秒s 分钟m 小时h 天d
     '''
     bar_interval = np.min(np.diff(candle[:, 0]))
     bar_int = bar_interval / MINUTE_BAR_INTERVAL
-    if bar_int <= 59:
+    if bar_int < 1:
+        bar_int = bar_interval / (MINUTE_BAR_INTERVAL / 60)
+        suffix = 's'
+    elif bar_int <= 59:
         suffix = 'm'
         bar_int = bar_int
     elif bar_int <= 60 * 23:
