@@ -24,7 +24,7 @@ def predict_bar(candle: np.array, MINUTE_BAR_INTERVAL=60000) -> str:
         suffix = 'h'
         bar_int = bar_int / 60
     else:
-        bar_int = bar_int / 60 * 24
+        bar_int = bar_int / (60 * 24)
         suffix = 'd'
 
     if not bar_int == int(bar_int):
