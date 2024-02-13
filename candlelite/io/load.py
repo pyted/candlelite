@@ -29,6 +29,7 @@ def load_candle_by_date(
         base_dir: str,
         timezone: str = None,
         bar: Literal['1m', '3m', '5m', '15m', '1H', '2H', '4H'] = '1m',
+        columns: list = [],
         valid_interval: bool = True,
         valid_start: bool = True,
         valid_end: bool = True,
@@ -37,11 +38,11 @@ def load_candle_by_date(
     :param instType: 产品类型
     :param symbol: 产品名称
     :param start: 起始时间
-
     :param end: 终止时间
     :param base_dir: 数据文件夹
     :param timezone: 时区
     :param bar: 时间粒度
+    :parma columns: 保留字段，保留candle中的哪些列，空列表表示全部
     :param valid_interval: 是否验证数据时间间隔
     :param valid_start: 是否验证数据起始时间
     :param valid_end: 是否验证数据终止时间
@@ -112,6 +113,9 @@ def load_candle_by_date(
                 symbol=symbol,
                 msg=valid_end_result['msg'],
             )
+    if columns:
+        candle = candle[:, columns]
+
     return candle
 
 
@@ -124,9 +128,10 @@ def load_candle_map_by_date(
         base_dir: str,
         timezone: str = None,
         bar: Literal['1m', '3m', '5m', '15m', '1H', '2H', '4H'] = '1m',
+        columns: list = [],
         endswith: str = '',
         contains: str = '',
-        p_num: int = 4,
+        p_num: int = 1,
         valid_interval: bool = True,
         valid_start: bool = True,
         valid_end: bool = True,
@@ -139,6 +144,7 @@ def load_candle_map_by_date(
     :param base_dir: 数据文件夹
     :param timezone: 时区
     :param bar: 时间粒度
+    :parma columns: 保留字段，保留candle中的哪些列，空列表表示全部
     :param endswith: 产品名称需以此结尾
     :param contains: 产品名称需包含此内容
     :param valid_interval: 是否验证数据时间间隔
@@ -187,6 +193,7 @@ def load_candle_map_by_date(
                     end=end,
                     timezone=timezone,
                     bar=bar,
+                    columns=columns,
                     base_dir=base_dir,
                     valid_interval=valid_interval,
                     valid_start=valid_start,
@@ -214,6 +221,7 @@ def load_candle_map_by_date(
                 end=end,
                 timezone=timezone,
                 bar=bar,
+                columns=columns,
                 base_dir=base_dir,
                 valid_interval=valid_interval,
                 valid_start=valid_start,
@@ -232,6 +240,7 @@ def load_candle_all(
         instType: str,
         symbol: str,
         base_dir: str,
+        columns: list = [],
         timezone: str = None,
         bar: Literal['1m', '3m', '5m', '15m', '1H', '2H', '4H'] = '1m',
 ):
@@ -252,6 +261,7 @@ def load_candle_all(
         base_dir=base_dir,
         timezone=timezone,
         bar=bar,
+        columns=columns,
     )
     return candle
 
@@ -261,7 +271,8 @@ def load_candle_map_all(
         instType: str,
         base_dir: str,
         timezone: str = None,
-        p_num: int = 4,
+        p_num: int = 1,
+        columns: list = [],
         bar: Literal['1m', '3m', '5m', '15m', '1H', '2H', '4H'] = '1m',
 ):
     symbols = _path.get_symbols_all(
@@ -281,6 +292,7 @@ def load_candle_map_all(
                     base_dir=base_dir,
                     timezone=timezone,
                     bar=bar,
+                    columns=columns,
                 )
             )
         results = _process.pool_worker(
@@ -302,6 +314,7 @@ def load_candle_map_all(
                 base_dir=base_dir,
                 timezone=timezone,
                 bar=bar,
+                columns=columns,
             )
             candle_map[symbol] = candle
     return candle_map
@@ -311,6 +324,7 @@ def load_candle_map_all(
 def load_candle_by_file(
         instType: str,
         symbol: str,
+        columns: list = [],
         path: str = None,
         base_dir: str = '',
         timezone: str = None,
@@ -329,7 +343,6 @@ def load_candle_by_file(
             bar=bar,
             timezone=timezone,
             base_dir=base_dir,
-
         )
     # 读取
     df = pd.read_csv(path)
@@ -342,6 +355,8 @@ def load_candle_by_file(
                 symbol=symbol,
                 msg=valid_interval_result['msg']
             )
+    if columns:
+        candle = candle[:, columns]
     return candle
 
 
@@ -349,6 +364,7 @@ def load_candle_by_file(
 def load_candle_map_by_file(
         instType: str,
         symbols: list = [],
+        columns=[],
         path: str = None,
         base_dir: str = '',
         timezone: str = None,
@@ -382,6 +398,7 @@ def load_candle_map_by_file(
             base_dir=base_dir,
             timezone=timezone,
             bar=bar,
+            columns=columns,
             valid_interval=valid_interval
         )
         candle_map[symbol] = candle
