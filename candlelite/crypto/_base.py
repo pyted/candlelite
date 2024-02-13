@@ -49,9 +49,10 @@ class IO():
             self,
             instType: str,
             symbol: str,
-            base_dir: str = None,
+            base_dir: str,
+            columns: list = [],
             timezone: str = None,
-            bar: Literal['1m', '3m', '5m', '15m', '1H', '2H', '4H'] = None,
+            bar: Literal['1m', '3m', '5m', '15m', '1H', '2H', '4H'] = '1m',
     ):
         if base_dir == None:
             base_dir = self.CANDLE_DATE_BASE_DIR
@@ -65,10 +66,11 @@ class IO():
     def load_candle_map_all(
             self,
             instType: str,
-            base_dir: str = None,
+            base_dir: str,
             timezone: str = None,
-            p_num: int = 4,
-            bar: Literal['1m', '3m', '5m', '15m', '1H', '2H', '4H'] = None,
+            p_num: int = 1,
+            columns: list = [],
+            bar: Literal['1m', '3m', '5m', '15m', '1H', '2H', '4H'] = '1m',
     ):
         if base_dir == None:
             base_dir = self.CANDLE_DATE_BASE_DIR
@@ -85,9 +87,10 @@ class IO():
             symbol: str,
             start: Union[int, float, str, datetime.date],
             end: Union[int, float, str, datetime.date],
-            base_dir: str = None,
+            base_dir: str,
             timezone: str = None,
-            bar: Literal['1m', '3m', '5m', '15m', '1H', '2H', '4H'] = None,
+            bar: Literal['1m', '3m', '5m', '15m', '1H', '2H', '4H'] = '1m',
+            columns: list = [],
             valid_interval: bool = True,
             valid_start: bool = True,
             valid_end: bool = True,
@@ -107,12 +110,13 @@ class IO():
             symbols: list,
             start: Union[int, float, str, datetime.date],
             end: Union[int, float, str, datetime.date],
-            base_dir: str = None,
+            base_dir: str,
             timezone: str = None,
-            bar: Literal['1m', '3m', '5m', '15m', '1H', '2H', '4H'] = None,
+            bar: Literal['1m', '3m', '5m', '15m', '1H', '2H', '4H'] = '1m',
+            columns: list = [],
             endswith: str = '',
             contains: str = '',
-            p_num: int = 4,
+            p_num: int = 1,
             valid_interval: bool = True,
             valid_start: bool = True,
             valid_end: bool = True,
@@ -130,10 +134,11 @@ class IO():
             self,
             instType: str,
             symbol: str,
+            columns: list = [],
             path: str = None,
-            base_dir: str = None,
+            base_dir: str = '',
             timezone: str = None,
-            bar: Literal['1m', '3m', '5m', '15m', '1H', '2H', '4H'] = None,
+            bar: Literal['1m', '3m', '5m', '15m', '1H', '2H', '4H'] = '1m',
             valid_interval: bool = True,
     ):
         if base_dir == None:
@@ -149,10 +154,11 @@ class IO():
             self,
             instType: str,
             symbols: list = [],
+            columns=[],
             path: str = None,
-            base_dir: str = None,
+            base_dir: str = '',
             timezone: str = None,
-            bar: Literal['1m', '3m', '5m', '15m', '1H', '2H', '4H'] = None,
+            bar: Literal['1m', '3m', '5m', '15m', '1H', '2H', '4H'] = '1m',
             valid_interval: bool = True,
     ):
         if base_dir == None:
