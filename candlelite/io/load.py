@@ -275,6 +275,9 @@ def load_candle_all(
 def load_candle_map_all(
         instType: str,
         base_dir: str,
+        symbols: list = [],
+        endswith: str = '',
+        contains: str = '',
         start: Union[int, float, str, datetime.date] = None,
         end: Union[int, float, str, datetime.date] = None,
         timezone: str = None,
@@ -282,12 +285,16 @@ def load_candle_map_all(
         columns: list = [],
         bar: Literal['1m', '3m', '5m', '15m', '1H', '2H', '4H'] = '1m',
 ):
-    symbols = _path.get_symbols_all(
-        instType=instType,
-        base_dir=base_dir,
-        timezone=timezone,
-        bar=bar,
-    )
+    if not symbols:
+        symbols = _path.get_symbols_all(
+            instType=instType,
+            base_dir=base_dir,
+            timezone=timezone,
+            bar=bar,
+        )
+        # 过滤endswith与contains
+        symbols = [symbol for symbol in symbols if symbol.endswith(endswith) and contains in symbol]
+
     candle_map = {}
     if p_num > 1:
         params = []

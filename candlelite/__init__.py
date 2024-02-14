@@ -9,4 +9,4 @@ from candlelite.crypto import *
 
 from candlelite import settings
 
-__version__ = '1.0.13'
+__version__ = '1.0.14'
