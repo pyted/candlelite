@@ -258,6 +258,9 @@ def load_candle_all(
 
     if candle_dates_result['code'] != True:
         raise exception.CandleDatesNonError(str(candle_dates_result))
+    # 空数据
+    if not candle_dates_result['data']['start'] or not candle_dates_result['data']['end']:
+        return np.array([])
     candle = load_candle_by_date(
         instType=instType,
         start=candle_dates_result['data']['start'],
@@ -320,6 +323,8 @@ def load_candle_map_all(
         for i, candle in enumerate(results):
             if _param.isnull(candle):
                 continue
+            if not candle.shape[0]:
+                continue
             symbol = symbols[i]
             candle_map[symbol] = candle
     else:
@@ -334,6 +339,8 @@ def load_candle_map_all(
                 bar=bar,
                 columns=columns,
             )
+            if not candle.shape[0]:
+                continue
             candle_map[symbol] = candle
     return candle_map
 

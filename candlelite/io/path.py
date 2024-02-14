@@ -247,14 +247,17 @@ def get_candle_dates(
 
         if os.path.isfile(path):
             candle_dates.append(date)
-    result['data']['start'] = candle_dates[0]
-    result['data']['end'] = candle_dates[-1]
-    range_dates = _date.get_range_dates(start=candle_dates[0], end=candle_dates[-1], timezone=timezone)
-    for range_date in range_dates:
-        if range_date not in candle_dates:
-            result['data']['non'].append(range_date)
-            result['code'] = False
-    return result
+    if candle_dates:
+        result['data']['start'] = candle_dates[0]
+        result['data']['end'] = candle_dates[-1]
+        range_dates = _date.get_range_dates(start=candle_dates[0], end=candle_dates[-1], timezone=timezone)
+        for range_date in range_dates:
+            if range_date not in candle_dates:
+                result['data']['non'].append(range_date)
+                result['code'] = False
+        return result
+    else:
+        return result  # 没有数据，但是code=True start=None，end=None
 
 
 # 获取全部的产品名称
