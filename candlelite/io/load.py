@@ -241,16 +241,21 @@ def load_candle_all(
         symbol: str,
         base_dir: str,
         columns: list = [],
+        start: Union[int, float, str, datetime.date] = None,
+        end: Union[int, float, str, datetime.date] = None,
         timezone: str = None,
         bar: Literal['1m', '3m', '5m', '15m', '1H', '2H', '4H'] = '1m',
 ):
     candle_dates_result = _path.get_candle_dates(
         instType=instType,
         symbol=symbol,
+        start=start,
+        end=end,
         base_dir=base_dir,
         timezone=timezone,
         bar=bar,
     )
+
     if candle_dates_result['code'] != True:
         raise exception.CandleDatesNonError(str(candle_dates_result))
     candle = load_candle_by_date(
@@ -270,6 +275,8 @@ def load_candle_all(
 def load_candle_map_all(
         instType: str,
         base_dir: str,
+        start: Union[int, float, str, datetime.date] = None,
+        end: Union[int, float, str, datetime.date] = None,
         timezone: str = None,
         p_num: int = 1,
         columns: list = [],
@@ -293,6 +300,8 @@ def load_candle_map_all(
                     timezone=timezone,
                     bar=bar,
                     columns=columns,
+                    start=start,
+                    end=end,
                 )
             )
         results = _process.pool_worker(
@@ -312,6 +321,8 @@ def load_candle_map_all(
                 instType=instType,
                 symbol=symbol,
                 base_dir=base_dir,
+                start=start,
+                end=end,
                 timezone=timezone,
                 bar=bar,
                 columns=columns,

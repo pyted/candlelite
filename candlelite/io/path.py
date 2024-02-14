@@ -183,6 +183,8 @@ def check_candle_date_path(
 def get_candle_dates(
         instType: str,
         symbol: str,
+        start=None,
+        end=None,
         base_dir: str = '',
         timezone: str = None,
         bar: Literal['1m', '3m', '5m', '15m', '1H', '2H', '4H'] = '1m',
@@ -223,15 +225,18 @@ def get_candle_dates(
         result['code'] = False
         result['msg'] = '无数据'
         return result
-    # 起始日期
-    start = year_months[0] + '-01'
-    days = _date.get_month_days(
-        year=year_months[-1].split('-')[0],
-        month=year_months[-1].split('-')[-1],
-        timezone=timezone,
-    )
-    # 终止日期
-    end = year_months[-1] + '-' + str(days)
+    if not start:
+        # 起始日期
+        start = year_months[0] + '-01'
+    if not end:
+        days = _date.get_month_days(
+            year=year_months[-1].split('-')[0],
+            month=year_months[-1].split('-')[-1],
+            timezone=timezone,
+        )
+
+        # 终止日期
+        end = year_months[-1] + '-' + str(days)
     dates = _date.get_range_dates(start=start, end=end, timezone=timezone)
     candle_dates = []  # 有数据的日期
     for date in dates:
