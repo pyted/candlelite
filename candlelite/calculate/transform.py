@@ -132,7 +132,7 @@ def to_candle(
     # 时间序列的名字
     ts_column_name = df.columns[0]
     # 时间戳转化为整数
-    df[ts_column_name] = df[ts_column_name].astype(int)
+    df[ts_column_name] = df[ts_column_name].astype(float)
     # 去重
     if drop_duplicate:
         df = df.drop_duplicates(subset=ts_column_name)

@@ -10,7 +10,7 @@ URL = "https://github.com/pyted/candlelite"
 EMAIL = 'pyted@outlook.com'
 AUTHOR = 'pyted'
 REQUIRES_PYTHON = '>=3.6.0'
-VERSION = '1.0.15'
+VERSION = '1.0.16'
 
 REQUIRED = [
     'numpy',
